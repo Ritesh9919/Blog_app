@@ -11,3 +11,11 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+.blog{
+  width:35%;
+  background-color: burlywood;
+  margin:auto;
+  padding-left: 5px;
+  text-align: left;
+}
