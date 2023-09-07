@@ -16,6 +16,10 @@ export default function Blog() {
 
     }
 
+    function handleDelete(i) {
+       setBlogs(blogs.filter((blog, index) => index !== i));
+    }
+
     return (
         <>
         <div style={{backgroundColor:'orange', width:'50%', height:'300px', padding:'10px', margin:'auto', borderRadius:'5px'}}>
@@ -36,11 +40,12 @@ export default function Blog() {
            
         </div>
         <h2>Blog:</h2>
-        {blogs.map((blog) => {
+        {blogs.map((blog, i) => {
             return (
-                <div className="blog">
+                <div className="blog" key={i}>
                 <h3>{blog.title}</h3>
                 <p>{blog.content}</p>
+                <button onClick={() => handleDelete(i)}>Delete</button>
                 </div>
             )
         })}
