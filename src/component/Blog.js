@@ -1,12 +1,22 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useReducer } from "react";
 
+function blogReducer(state, action) {
+    if (action.type == 'Add') {
+        return [action.blog, ...state];
+    } else if (action.type == 'Remove') {
+        return state.filter((blog, index) => index !== action.index);
+    } else {
+        return [];
+    }
+}
 
 export default function Blog() {
 
     // const [title, setTitle] = useState('');
     // const [content, setContent] = useState('');
     const [formData, setFormData] = useState({ title: '', content: '' });
-    const [blogs, setBlogs] = useState([]);
+    // const [blogs, setBlogs] = useState([]);
+    const [blogs, dispatch] = useReducer(blogReducer, []);
     const titleRef = useRef(null);
 
 
@@ -26,14 +36,16 @@ export default function Blog() {
 
     function handleSubmit(e) {
         e.preventDefault()
-        setBlogs([{ title: formData.title, content: formData.content }, ...blogs]);
+        // setBlogs([{ title: formData.title, content: formData.content }, ...blogs]);
+        dispatch({ type: 'Add', blog: { title: formData.title, content: formData.content } });
         titleRef.current.focus();
         setFormData({ title: "", content: "" });
 
     }
 
     function handleDelete(i) {
-        setBlogs(blogs.filter((blog, index) => index !== i));
+        // setBlogs(blogs.filter((blog, index) => index !== i));
+        dispatch({ type: 'Remove', index: i });
     }
 
     return (
