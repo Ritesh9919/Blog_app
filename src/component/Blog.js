@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect} from "react";
 import {db} from '../firebaseInit';
-import { collection, addDoc } from "firebase/firestore"; 
+import { collection, addDoc, doc, setDoc, getDocs} from "firebase/firestore"; 
 
 
 
@@ -26,7 +26,22 @@ export default function Blog() {
         } else {
             document.title = 'No blogs';
         }
-    }, [blogs])
+    }, [blogs]);
+
+    useEffect(() => {
+      async function fetchData() {
+         const blogSnapshot = await getDocs(collection(db, 'Blogs'));
+         const blogs = blogSnapshot.docs.map((doc) => {
+            return {
+                id:doc.id,
+                ...doc.data()
+            }
+         });
+
+         setBlogs(blogs);
+      }
+      fetchData()
+    },[]);
 
 
 
@@ -34,12 +49,22 @@ export default function Blog() {
         e.preventDefault()
         setBlogs([{ title: formData.title, content: formData.content }, ...blogs]);
         // Add a new document with a generated id.
-       const docRef = await addDoc(collection(db, "Blogs"), {
-       title: formData.title,
-        content: formData.content,
-        createdOn:new Date()
-       });
-    //    console.log("Document written with ID: ", docRef.id);
+
+    //    await addDoc(collection(db, "Blogs"), {
+    //    title: formData.title,
+    //     content: formData.content,
+    //     createdOn:new Date()
+    //    });
+
+       // add document with the generated id and you can define id too
+         const docRef = doc(collection(db, 'Blogs'));
+         await setDoc(docRef, {
+            title: formData.title,
+             content: formData.content,
+             createdOn:new Date()
+            });
+
+    
         
         titleRef.current.focus();
         setFormData({ title: "", content: "" });
