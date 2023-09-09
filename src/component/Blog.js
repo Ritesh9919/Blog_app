@@ -1,5 +1,8 @@
 import { useState, useRef, useEffect} from "react";
 import {db} from '../firebaseInit';
+import { collection, addDoc } from "firebase/firestore"; 
+
+
 
 
 
@@ -27,9 +30,16 @@ export default function Blog() {
 
 
 
-    function handleSubmit(e) {
+    async function handleSubmit(e) {
         e.preventDefault()
         setBlogs([{ title: formData.title, content: formData.content }, ...blogs]);
+        // Add a new document with a generated id.
+       const docRef = await addDoc(collection(db, "Blogs"), {
+       title: formData.title,
+        content: formData.content,
+        createdOn:new Date()
+       });
+    //    console.log("Document written with ID: ", docRef.id);
         
         titleRef.current.focus();
         setFormData({ title: "", content: "" });
